@@ -221,15 +221,18 @@ public class NFA {
         NFA.addState(newStartTransitions);
         //add transitions together
         NFA.addTransitions(newTransitions, nfa2.getTransitions());
+        System.out.println(newTransitions);
         //add one state at the beginning has to be state number 0 hence offset all other states using addTransitions
         NFA.addTransitions(newStartTransitions, newTransitions);
+        System.out.println(newStartTransitions);
         NFA.addTransition(newStartTransitions, 0, '\0', 1);
-        NFA.addTransition(newStartTransitions, 0, '\0', nfa1.getTransitions().size()+2);// offset 1 or 2 ??
+        NFA.addTransition(newStartTransitions, 0, '\0', nfa1.getTransitions().size()+1);// offset 1 or 2 ??
+        // by 1 because evrey state in nfa2 was offset by size nfa1 by merging with nfa1 but everything was offset by 1 by merging with the new initial state
 
         //add one final state with epsilon transitions coming from all final states
         NFA.addState(newStartTransitions);
-        NFA.addTransition(newStartTransitions, nfa1.getFinalState(), '\0', newStartTransitions.size()-1);
-        NFA.addTransition(newStartTransitions, nfa2.getFinalState(), '\0', newStartTransitions.size()-1);
+        NFA.addTransition(newStartTransitions, nfa1.getFinalState()+1, '\0', newStartTransitions.size()-1); // + 1 because we added the common start stade which offsets every state by 1
+        NFA.addTransition(newStartTransitions, nfa2.getFinalState()+nfa1.getTransitions().size()+1, '\0', newStartTransitions.size()-1);
 
 
         return new NFA(newAlphabet ,newStartTransitions, newStartTransitions.size()-1);
@@ -249,7 +252,6 @@ public class NFA {
      */
     public static NFA repetition(NFA nfa) {
         ArrayList<HashMap<Character, Set<Integer>>> newTransitions = new ArrayList<>(nfa.getTransitions());
-        //Why exception because 10=10 in the addTransition check but why? transitions size should be one greater than final state??
         NFA.addTransition(newTransitions, 0, '\0', nfa.getFinalState());
         NFA.addTransition(newTransitions, nfa.getFinalState(), '\0', 0);
         return new NFA(nfa.getAlphabet(), newTransitions, nfa.getFinalState());
