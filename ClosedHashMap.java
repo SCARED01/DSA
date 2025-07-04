@@ -81,6 +81,7 @@ public class ClosedHashMap<V> implements Iterable<KeyValuePair<V>> {
         }
         if((float) i /this.map.length > resizeThreshold){
             int j = this.map.length*2;
+            // is there a more efficient way to do this?
             while(!(j%4==3) && isPrime(j)){
                 j+=1;
             }
