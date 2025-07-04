@@ -62,7 +62,7 @@ public class ClosedHashMap<V> implements Iterable<KeyValuePair<V>> {
      */
     public V put(int key, V value) throws IllegalStateException {
         for(int i=0; i<this.map.length; i++){
-            int h = key % this.map.length;
+            final int h = key % this.map.length;
             int index = h + (int) (Math.pow(-1, i-1)) * (int) Math.pow(i,2);
             if(this.map[index] == null){
                 this.map[index] = new KeyValuePair<>(key, value);
@@ -82,10 +82,10 @@ public class ClosedHashMap<V> implements Iterable<KeyValuePair<V>> {
         if((float) i /this.map.length > resizeThreshold){
             int j = this.map.length*2;
             // is there a more efficient way to do this?
-            while(!(j%4==3) && isPrime(j)){
+            while(!((j%4==3) && isPrime(j))){
                 j+=1;
             }
-            KeyValuePair<V>[] newMap = new KeyValuePair[j];
+            final KeyValuePair<V>[] newMap = new KeyValuePair[j];
 
             for(KeyValuePair<V> pair: this.map){
                 for(int k=0; k<newMap.length; k++) {
@@ -119,7 +119,7 @@ public class ClosedHashMap<V> implements Iterable<KeyValuePair<V>> {
      * @return the value or null
      */
     public V get(int key) {
-        int h = key% this.map.length;
+        final int h = key % this.map.length;
         for(int i = 0; i<map.length; i++){
             int index = h + (int) (Math.pow(-1, i-1)) * (int) Math.pow(i,2);
             if(key==this.map[index].getKey()){

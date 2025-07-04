@@ -184,14 +184,16 @@ public class NFA {
      * @return NFA for the concatenation of nfa1 followed by nfa2
      */
     public static NFA concat(NFA nfa1, NFA nfa2) {
-        Set<Character> newAlphabet = new HashSet<>();
-        ArrayList<HashMap<Character, Set<Integer>>> newTransitions = new ArrayList<>(nfa1.getTransitions());
+        final Set<Character> newAlphabet = new HashSet<>();
+        final ArrayList<HashMap<Character, Set<Integer>>> newTransitions = new ArrayList<>(nfa1.getTransitions());
 
         newAlphabet.addAll(nfa1.getAlphabet());
         newAlphabet.addAll(nfa2.getAlphabet());
+
         NFA.addTransitions(newTransitions, nfa2.getTransitions());
         NFA.addTransition(newTransitions, nfa1.getFinalState(), '\0', nfa1.getFinalState()+1);
-        NFA newNFA = new NFA(newAlphabet, newTransitions, nfa2.getFinalState());
+        
+        final NFA newNFA = new NFA(newAlphabet, newTransitions, nfa2.getFinalState());
         return newNFA;
 
     }
@@ -211,20 +213,20 @@ public class NFA {
      */
     public static NFA union(NFA nfa1, NFA nfa2) {
         //Unite the Alphabet
-        Set<Character> newAlphabet = new HashSet<>();
+        final Set<Character> newAlphabet = new HashSet<>();
         newAlphabet.addAll(nfa1.getAlphabet());
         newAlphabet.addAll(nfa2.getAlphabet());
 
-        ArrayList<HashMap<Character, Set<Integer>>> newTransitions = new ArrayList<>(nfa1.getTransitions());
+        final ArrayList<HashMap<Character, Set<Integer>>> newTransitions = new ArrayList<>(nfa1.getTransitions());
 
-        ArrayList<HashMap<Character, Set<Integer>>> newStartTransitions = new ArrayList<>();
+        final ArrayList<HashMap<Character, Set<Integer>>> newStartTransitions = new ArrayList<>();
         NFA.addState(newStartTransitions);
         //add transitions together
         NFA.addTransitions(newTransitions, nfa2.getTransitions());
-        System.out.println(newTransitions);
+
         //add one state at the beginning has to be state number 0 hence offset all other states using addTransitions
         NFA.addTransitions(newStartTransitions, newTransitions);
-        System.out.println(newStartTransitions);
+
         NFA.addTransition(newStartTransitions, 0, '\0', 1);
         NFA.addTransition(newStartTransitions, 0, '\0', nfa1.getTransitions().size()+1);// offset 1 or 2 ??
         // by 1 because evrey state in nfa2 was offset by size nfa1 by merging with nfa1 but everything was offset by 1 by merging with the new initial state
